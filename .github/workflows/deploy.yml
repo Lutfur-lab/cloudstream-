@@ -20,9 +20,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Zip artifact for deployment
+        run: zip -r release.zip . --exclude "*.git*"
+
       - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
         with:
           app-name: cloudstreamfunctions
-          package: .
+          package: release.zip
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: false
+          enable-oryx-build: false
