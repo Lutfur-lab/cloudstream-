@@ -8,23 +8,19 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm install
+      - run: npm install
 
-      - name: Zip artifact for deployment
-        run: zip -r release.zip . -x "*.git*"
+      - run: zip -r release.zip . -x "*.git*"
 
-      - name: Deploy to Azure (Flex Consumption fix)
-        uses: azure/webapps-deploy@v2
+      - uses: azure/webapps-deploy@v3
         with:
           app-name: cloudstreamfunctions
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
