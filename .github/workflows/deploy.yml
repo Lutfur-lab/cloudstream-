@@ -22,6 +22,6 @@ jobs:
 
       - uses: azure/webapps-deploy@v3
         with:
-          app-name: cloudstreamfunctions
+          app-name: cloudstreamfunctions-d5f6bpgzefbzhya2
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
           package: release.zip
