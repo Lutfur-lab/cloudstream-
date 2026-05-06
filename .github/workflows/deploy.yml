@@ -8,20 +8,24 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
 
-      - run: zip -r release.zip . -x "*.git*"
+      - name: Install Azure Functions Core Tools
+        run: |
+          npm install -g azure-functions-core-tools@4 --unsafe-perm true
 
-      - uses: azure/webapps-deploy@v3
-        with:
-          app-name: cloudstreamfunctions-d5f6bpgzefbzhya2
-          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-          package: release.zip
+      - name: Deploy via Azure Functions Core Tools
+        run: |
+          func azure functionapp publish cloudstreamfunctions --javascript --no-build
+        env:
+          AzureWebJobsStorage: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
