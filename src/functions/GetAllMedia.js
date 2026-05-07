@@ -21,7 +21,7 @@ app.http('GetAllMedia', {
         }
         try {
             const { resources } = await container.items
-                .query('SELECT * FROM c ORDER BY c.uploadDate DESC')
+                .query('SELECT * FROM c WHERE NOT CONTAINS(c.id, "-log") ORDER BY c.uploadDate DESC')
                 .fetchAll();
             return {
                 status: 200,

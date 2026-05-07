@@ -20,12 +20,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Azure Functions Core Tools
-        run: |
-          npm install -g azure-functions-core-tools@4 --unsafe-perm true
+      - name: Zip artifact
+        run: zip -r release.zip . -x "*.git*" -x ".github/*"
 
-      - name: Deploy via Azure Functions Core Tools
+      - name: Deploy via Kudu ZIP deploy
         run: |
-          func azure functionapp publish cloudstreamfunctions --javascript --no-build
-        env:
-          AzureWebJobsStorage: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+          curl -X POST \
+            "https://cloudstreamfunctions-d5f6bpgzefbzhya2.scm.italynorth-01.azurewebsites.net/api/zipdeploy" \
+            -u "${{ secrets.AZURE_DEPLOY_USER }}:${{ secrets.AZURE_DEPLOY_PASSWORD }}" \
+            -T release.zip \
+            -H "Content-Type: application/zip" \
+            --fail \
+            --verbose
